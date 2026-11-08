@@ -1,10 +1,24 @@
-
 from contextlib import asynccontextmanager
 from typing import Optional
 
 from fastapi import FastAPI, Depends, HTTPException
 from sqlmodel import SQLModel, Field, Session, create_engine, select
 
+import os
+def load_env_file():
+    env_path = os.path.join(os.path.dirname(__file__), ".env")
+
+    with open(env_path, "r", encoding="utf-8") as file:
+        for line in file:
+            line = line.strip()
+
+            if not line or line.startswith("#"):
+                continue
+
+            key, value = line.split("=", 1)
+            os.environ[key.strip()] = value.strip()
+
+load_env_file()
 
 # مدل جدول books
 class Book(SQLModel, table=True):
@@ -19,11 +33,11 @@ from sqlalchemy import URL
 
 DATABASE_URL = URL.create(
     drivername="postgresql+psycopg2",
-    username="postgres",
-    password="xxxx",
-    host="localhost",
-    port=5432,
-    database="library_db",
+    username=os.getenv("DB_USER"),
+    password=os.getenv("DB_PASSWORD"),
+    host=os.getenv("DB_HOST"),
+    port=int(os.getenv("DB_PORT")),
+    database=os.getenv("DB_NAME"),
 )
 
 engine = create_engine(DATABASE_URL, echo=True)
@@ -47,7 +61,6 @@ app = FastAPI(lifespan=lifespan)
 def get_books(session: Session = Depends(get_session)):
     return session.exec(select(Book)).all()
 
-
 @app.post("/books", response_model=Book)
 def create_book(book: Book, session: Session = Depends(get_session)):
     book.id = None
@@ -55,7 +68,6 @@ def create_book(book: Book, session: Session = Depends(get_session)):
     session.commit()
     session.refresh(book)
     return book
-
 
 @app.get("/books/{book_id}", response_model=Book)
 def get_book(book_id: int, session: Session = Depends(get_session)):
