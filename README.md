@@ -1,62 +1,48 @@
 # Library API
 
-A simple Book Library API built with Python and FastAPI.
+A simple Library API built with Python and FastAPI.
 
-## Features
+This project contains two implementations:
 
-- Get all books
-- Add a new book
-- Get a book by ID
-- Update a book
-- Delete a book
+## 1. Dictionary Version
+- File: `LibrariApi.py`
+- Stores book data in a Python dictionary.
+- Data is stored temporarily in memory.
 
-## Technologies
+## 2. PostgreSQL Version
+- File: `LibraryApi.py`
+- Uses PostgreSQL as the database.
+- Uses SQLModel and SQLAlchemy for database operations.
+- Stores book data persistently in the database.
 
-- Python
-- FastAPI
-- Uvicorn
-
-## Installation
+## Requirements
 
 Install the required packages:
 
 ```bash
-python -m pip install -r requirements.txt
-python -m pip install --upgrade fastapi "uvicorn[standard]"
+pip install -r requirements.txt
 ```
 
-## Run the Project
+## Environment Variables
 
-Run the following command from the project folder:
+For the PostgreSQL version, create a `.env` file based on `.env.example` and configure your database credentials.
+
+Do not upload your `.env` file or real database credentials to GitHub.
+
+## Run the Dictionary Version
 
 ```bash
 python -m uvicorn LibrariApi:app --reload
 ```
 
-The API will be available at:
+## Run the PostgreSQL Version
 
-`http://127.0.0.1:8000`
+```bash
+python -m uvicorn LibraryApi:app --reload
+```
 
 ## API Documentation
 
-Open the following URL in your browser to test the API:
+After starting the application, open:
 
-`http://127.0.0.1:8000/docs`
-
-## Available Endpoints
-
-| Method | Endpoint | Description |
-|---|---|---|
-| GET | `/books` | Get all books |
-| POST | `/books` | Add a new book |
-| GET | `/books/{book_id}` | Get a book by ID |
-| PATCH | `/books/{book_id}` | Update a book |
-| DELETE | `/books/{book_id}` | Delete a book |
-
-## Data Storage
-
-Book data is stored in memory. Changes will be lost when the application restarts.
-
-## Note
-
-This project is a beginner-level practice project for learning REST APIs with FastAPI.
+http://127.0.0.1:8000/docs
